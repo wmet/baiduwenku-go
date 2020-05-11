@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="40a2b313-e8c8-4706-8eef-5a71da012d58" name="默认的" comment="">
+      <change afterPath="$PROJECT_DIR$/filetype/doc.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/filetype/pdf.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/filetype/ppt.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/filetype/txt.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/css/one.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/html/home.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/utils.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" path="D:\go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
+  </component>
+  <component name="ProjectId" id="1blNZIeNlRIQ7XWs6ax10Lh1Ccx" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="baiduwenku" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/main.go" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build main.go" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="433" y="213" key="#Go_Modules" timestamp="1589202796299">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="433" y="213" key="#Go_Modules/0.0.1280.760@0.0.1280.760" timestamp="1589202796299" />
+    <state x="96" y="35" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589202869192">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="96" y="35" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.760@0.0.1280.760" timestamp="1589202869192" />
+    <state x="207" y="0" key="CommitChangelistDialog2" timestamp="1589202826312">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="207" y="0" key="CommitChangelistDialog2/0.0.1280.760@0.0.1280.760" timestamp="1589202826312" />
+  </component>
+</project>

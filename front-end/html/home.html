@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>百度文库下载</title>
+    <link rel="stylesheet" href="/static/css/one.css" />
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".logbtn").click(function () {
+                const url = $("#url").val();
+                var reg=/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;
+                if (!reg.test(url)){
+                    alert("非法url！");
+                } else {
+                    $("#error1").text("正在飞速解析中，请稍等...............");
+                    $("#error1").css("color","blue");
+                    var param = {
+                        url:url
+                    };
+                    $.post("/baiduspider", param, function (data) {
+                        if(data["status"]==0){
+                            $("#error1").text(data["err"]);
+                            $("#error1").css("color","red");
+                        }else{
+                            window.open("http://175.24.33.33:9999/download/?file="+data["path"]);
+                            location.reload()
+                        }
+                    })
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+<form id="register-form" class="register-form" method="POST">
+    <h1>百度文库下载</h1>
+    <div class="txtb">
+        <input type="text" id="url">
+        <span data-placeholder="链接"></span>
+    </div>
+
+    <input type="button" class="logbtn" value="开始解析" style="font-size: 20px;">
+    <p id="error1" style="font-size: 20px;color: blue;"></p>
+
+</form>
+
+<script type="text/javascript">
+    $(".txtb input").on("focus", function () {
+        $(this).addClass("focus");
+    });
+
+    $(".txtb input").on("blur", function () {
+        if ($(this).val() === "") {
+            $(this).removeClass("focus");
+        }
+    });
+</script>
+</body>
+
+</html>
