@@ -1,7 +1,7 @@
 package filetype
 
 import (
-	"github.com/gufeijung/baiduwenku/utils"
+	"github.com/gufeijun/baiduwenku/utils"
 	"os"
 	"strconv"
 	"strings"

@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="40a2b313-e8c8-4706-8eef-5a71da012d58" name="默认的" comment="">
-      <change afterPath="$PROJECT_DIR$/filetype/doc.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/filetype/pdf.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/filetype/ppt.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/filetype/txt.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/front-end/css/one.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/front-end/html/home.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/utils.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filetype/ppt.go" beforeDir="false" afterPath="$PROJECT_DIR$/filetype/ppt.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +18,7 @@
     <option name="indexEntireGoPath" value="false" />
   </component>
   <component name="ProjectId" id="1blNZIeNlRIQ7XWs6ax10Lh1Ccx" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -38,6 +31,7 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RunManager">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
@@ -72,5 +66,25 @@
       <screen x="0" y="0" width="1280" height="760" />
     </state>
     <state x="207" y="0" key="CommitChangelistDialog2/0.0.1280.760@0.0.1280.760" timestamp="1589202826312" />
+    <state width="1240" height="190" key="GridCell.Tab.0.bottom" timestamp="1589203484744">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state width="1240" height="190" key="GridCell.Tab.0.bottom/0.0.1280.760@0.0.1280.760" timestamp="1589203484744" />
+    <state width="1240" height="190" key="GridCell.Tab.0.center" timestamp="1589203484744">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state width="1240" height="190" key="GridCell.Tab.0.center/0.0.1280.760@0.0.1280.760" timestamp="1589203484744" />
+    <state width="1240" height="190" key="GridCell.Tab.0.left" timestamp="1589203484744">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state width="1240" height="190" key="GridCell.Tab.0.left/0.0.1280.760@0.0.1280.760" timestamp="1589203484744" />
+    <state width="1240" height="190" key="GridCell.Tab.0.right" timestamp="1589203484744">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state width="1240" height="190" key="GridCell.Tab.0.right/0.0.1280.760@0.0.1280.760" timestamp="1589203484744" />
+    <state x="172" y="25" key="SettingsEditor" timestamp="1589203018213">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="172" y="25" key="SettingsEditor/0.0.1280.760@0.0.1280.760" timestamp="1589203018213" />
   </component>
 </project>
