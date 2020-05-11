@@ -24,8 +24,10 @@
                             $("#error1").text(data["err"]);
                             $("#error1").css("color","red");
                         }else{
-                            window.open("http://175.24.33.33:9999/download/?file="+data["path"]);
-                            location.reload()
+                            window.location.href="http://127.0.0.1:9999/download/?file="+data["path"];
+                            $("#url").val("");
+                            $("#error1").text("");
+                            $(".txtb input").removeClass("focus");
                         }
                     })
                 }

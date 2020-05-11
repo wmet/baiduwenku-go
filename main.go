@@ -40,6 +40,7 @@ func main(){
 			})
 			return
 		}
+		fmt.Println(filepath)
 		c.JSON(http.StatusOK,gin.H{
 			"status":"1",
 			"path":filepath,
@@ -64,7 +65,7 @@ func main(){
 		c.Writer.Write(buf)
 		//go os.Remove(name)
 	})
-	router.Run("0.0.0.0:9999")
+	router.Run("127.0.0.1:9999")
 }
 
 func spider(url string)(string,error) {
