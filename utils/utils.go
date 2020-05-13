@@ -196,7 +196,7 @@ func GetDownloadTicket()(num int,err error){
 	return strconv.Atoi(res[0][1])
 }
 
-func GetInfos(url string)(infos []string,ifprofession bool,ifshare bool,err error){
+func GetInfos(url string)(infos []string,ifprofession bool,err error){
 	infos=make([]string,3)
 	cli:=&http.Client{}
 	req,err:=http.NewRequest("GET",url,nil)
