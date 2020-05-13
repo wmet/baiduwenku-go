@@ -8,7 +8,7 @@
     <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-            $(".logbtn").click(function () {
+            $("#sub1").on("click",(function () {
                 const url = $("#url").val();
                 var reg=/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;
                 if (!reg.test(url)){
@@ -24,30 +24,158 @@
                             $("#error1").text(data["err"]);
                             $("#error1").css("color","red");
                         }else{
-                            window.location.href="http://127.0.0.1:9999/download/?file="+data["path"];
+                            window.location.href="/download/?file="+data["path"];
                             $("#url").val("");
                             $("#error1").text("");
                             $(".txtb input").removeClass("focus");
                         }
-                    })
+                    });
                 }
+            }));
+            $("#url").bind("keydown",function (e) {
+                var key = e.which;
+                if(key==13){
+                    return false;
+                }
+            });
+            $(".login").click(function () {
+                const emailadd = $("#email").val();
+                const password = $("#password").val();
+                var param = {
+                    emailadd: emailadd,
+                    password: password,
+                };
+                $.post("/husterlogin", param, function (data) {
+                    if (data["status"] == 1) {
+                        location.reload();
+                    } else {
+                        if(data["err"]==2){
+                            $("#password").css("border-color","red");
+                            alert("密码错误！");
+                        }else{
+                            $("#email").css("border-color","red");
+                            alert("邮箱未注册！");
+                        }
+                    }
+                });
             });
         });
     </script>
 </head>
 
 <body>
-<form id="register-form" class="register-form" method="POST">
-    <h1>百度文库下载</h1>
+<style>
+    *{ margin:0; padding:0;}
+    button, input{ outline:none;}
+    button, .login{ width:30px; height:25px; background:cornflowerblue; color:#fff; border:none; border-radius:6px; display: block; margin:20px auto; cursor: pointer;}
+    .popOutBg{ width:100%; height:100%; position: fixed; left:0; top:0; background:rgba(0,0,0,.6); display: none;}
+    .popOut{ position:fixed; width:600px; height:300px; top:50%; left:50%; margin-top:-150px; margin-left:-300px; background:#fff; border-radius:8px; overflow: hidden; display: none;}
+    .popOut > span{ position: absolute; right:10px; top:0; height:42px; line-height:42px; color:#000; font-size:30px; cursor: pointer;}
+    .popOut table{ display: block; margin:42px auto 0; width:520px;}
+    .popOut caption{ width:520px; text-align: center; color:#f40; font-size:18px; line-height:42px;}
+    .popOut table tr td{ color:#666; padding:6px; font-size:14px;}
+    .popOut table tr td:first-child{ text-align: right;}
+    .inp{ width:280px; height:30px; line-height:30px; border:1px solid #999; padding:5px 10px; color:#000; font-size:14px; border-radius:6px;}
+    .inp:focus{ border-color:blue;}
+    @keyframes ani{
+        from{
+            transform:translateX(-100%) rotate(-60deg) scale(.5);
+        }
+        50%{
+            transform:translateX(0) rotate(0) scale(1);
+        }
+        90%{
+            transform:translateX(20px) rotate(0) scale(.8);
+        }
+        to{
+            transform:translateX(0) rotate(0) scale(1);
+        }
+    }
+    .ani{ animation:ani .5s ease-in-out;}
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: white;
+        min-width: 50px;
+        padding: 5px 12px;
+        font-family: "Helvetica,Arial,sans-serif;";
+        text-align: center;
+        font-size: 10px;
+    }
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+    .poptip{background:#FFFCEF;color: #DB7C22;float:left;position: relative;top:8px;left:50px;height: 120px;padding: 6px 10px 5px;font-size: 12px;border: solid 1px #FFBB76;border-radius: 2px;box-shadow: 0 0 3px #ddd;}
+    .poptip-arrow{position: absolute;overflow: hidden;font-style: normal;font-family: simsun;font-size: 12px;text-shadow:0 0 2px #ccc;}
+    .poptip-arrow em,.poptip-arrow i{position: absolute;left:0;top:0;font-style: normal;}
+    .poptip-arrow em{color:#FFBB76;}
+    .poptip-arrow i{color: #FFFCEF;}
+    .poptip-arrow-left{left:-6px;height: 12px;width: 6px;top: 12px;margin-top:-6px;}
+    .poptip-arrow-left em{left:1px;}
+    .poptip-arrow-left i{left:2px;}
+</style>
+<img src="https://i.loli.net/2020/05/13/9mMW4hcAoLyq2Xb.png" style="position: absolute;left: 5px;top:10px;" height="40" width="40">
+<div class="poptip">
+    <span class="poptip-arrow poptip-arrow-left"><em>◆</em><i>◆</i></span>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;非登录用户解析速度较慢,且不支持excel文件的下载,下载</br>文件非原格式，ppt文件会转为多张图片压缩打包的zip格式。<br>
+    登录用户能以源文件形式不限次数下载所有需要下载券的vip</br>文档，对于vip专享文档由于百度限制，每月所有人加起来只<br>
+    有9次下载机会，次月次数刷新。目前注册只对华科学生开放，<br>统一使用智慧华中大邮箱注册本站，<a href="http://ncs.hust.edu.cn/info/1082/1796.htm" style="text-decoration: underline">没有华科邮箱？</a>
+    <br>项目永久免费且已经开源，详见：<a href="https://github.com/gufeijun/baiduwenku-go" style="text-decoration: underline">baiduwenku-go</a> 。
+</div>
+<img src="https://i.loli.net/2020/05/13/k4Yljgwe2FWBiAH.jpg" style="position: absolute;left: 45px;top:200px;" width="360">
+<div style="position: absolute;left: 120px;top:250px;" height="200">本月剩余专享vip文档下载次数</div>
+<div style="position: absolute;left: 210px;top:280px;font-size: 60px" height="200">{{.Remain}}</div>
+<form action="" id="register-form" class="register-form" method="POST">
+    {{if .Emailadd}}
+        <div style="float: right" class="dropdown">
+            <span style="text-decoration: underline;font-size: 15px">{{.Emailadd}}</span>
+            <div class="dropdown-content">
+                <a href="/logout" style="color: grey;font-size: 12px;">登出</a>
+            </div>
+        </div>
+        <span style="float: right">欢迎:</span>
+        <br><br>
+    {{else}}
+        <button class="logindex" style="margin:0px auto 0px auto;float: right;" type="button">登录</button>
+        <button class="register" style="margin:0px auto 0px auto;float: right;margin-right: 5px;" type="button">注册</button><br><br>
+    {{end}}
+    <h1 style="text-align: center;">百度文库下载</h1>
     <div class="txtb">
         <input type="text" id="url">
         <span data-placeholder="链接"></span>
     </div>
-
-    <input type="button" class="logbtn" value="开始解析" style="font-size: 20px;">
-    <p id="error1" style="font-size: 20px;color: blue;"></p>
-
+    {{if .Emailadd}}
+        <input type="button" class="submit" id="sub1" value="开始解析" style="font-size: 20px;">
+        <p style="text-align: center;margin-top: 10px">对你有帮助就给<a style="text-decoration: underline" href="https://github.com/gufeijun/baiduwenku-go" target="_blank">项目</a>点一个star吧,（●＞ω＜●）！</p>
+    {{else}}
+    <input type="button" class="submit" id="sub1" value="开始解析(非源文件)" style="font-size: 20px;">
+    <p style="text-align: center;margin-top: 10px;">想下载源文件？免费注册和登录吧！</p>
+    {{end}}
+    <p id="error1" style="font-size: 20px;color: blue;margin-top: 10px"></p>
 </form>
+
+<div class="popOutBg"></div>
+<div class="popOut">
+    <span title="关闭"> x </span>
+    <table style="position: relative">
+        <caption>智慧华中大邮箱登录</caption>
+        <tr>
+            <td width="120">邮箱：</td>
+            <td><input type="text" class="inp" id="email" placeholder="请输入智慧华中大邮箱" required/></td>
+        </tr>
+        <tr>
+            <td>密码：</td>
+            <td><input type="password" class="inp" id="password" placeholder="请输入密码" required/></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="button" class="login" value="登录" style="width: 150px;height: 30px;"/></td>
+        </tr>
+    </table>
+</div>
 
 <script type="text/javascript">
     $(".txtb input").on("focus", function () {
@@ -59,7 +187,27 @@
             $(this).removeClass("focus");
         }
     });
+    function ani(){
+        $(".popOut").attr("class","popOut ani");
+    }
+    $(".logindex").click(function(){
+        $(".popOut").css("display","block");
+        ani();
+        $(".popOutBg").css("display","block");
+    });
+    $(".popOut > span").click(function(){
+        $(".popOut").css("display","none");
+        $(".popOutBg").css("display","none");
+    });
+    $(".popOutBg").click(function(){
+        $(".popOut").css("display","none");
+        $(".popOutBg").css("display","none");
+    });
+    $(".register").click(function () {
+        window.open("/hustregister");
+    })
 </script>
+
 </body>
 
 </html>

@@ -4,8 +4,11 @@ import (
 	"archive/zip"
 	"errors"
 	"github.com/axgle/mahonia"
+	"github.com/go-gomail/gomail"
+	"github.com/gufeijun/baiduwenku/config"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"regexp"
@@ -143,6 +146,98 @@ func AddFileToZip(zipWriter *zip.Writer, filename string) error {
 	return err
 }
 
+//SendCode 发送验证码
+func SendCode(emailadd string, code string) {
+	m := gomail.NewMessage()
 
+	m.SetAddressHeader("From", config.SeverConfig.IMAP_EMAIL/*"发件人地址"*/, "百度文库下载平台") // 发件人
 
+	m.SetHeader("To", m.FormatAddress(emailadd, "收件人")) // 收件人
 
+	m.SetHeader("Subject", "来自百度文库下载平台的验证码") // 主题
+
+	m.SetBody("text/plain", "您的验证码为:"+code) // 正文
+
+	d := gomail.NewPlainDialer(config.SeverConfig.IMAP_SERVER,  config.SeverConfig.IMAP_PORT, config.SeverConfig.IMAP_EMAIL, config.SeverConfig.IMAP_PASSWORD) // 发送邮件服务器、端口、发件人账号、发件人密码
+	if err := d.DialAndSend(m); err != nil {
+		log.Println("发送失败", err)
+		return
+	}
+	log.Println("Have sent email to "+emailadd)
+}
+
+//还剩多少专享文档下载券
+func GetDownloadTicket()(num int,err error){
+	client:=&http.Client{}
+	req,err:=http.NewRequest("GET","https://wenku.baidu.com/customer/interface/getuserdownloadticket",nil)
+	if err!=nil{
+		return
+	}
+	req.Header.Set("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36")
+	cookie:=&http.Cookie{
+		Name: "BDUSS",
+		Value: config.SeverConfig.BDUSS,
+	}
+	req.AddCookie(cookie)
+	resp,err:=client.Do(req)
+	if err!=nil{
+		return
+	}
+	defer resp.Body.Close()
+	buf,err:=ioutil.ReadAll(resp.Body)
+	if err!=nil{
+		return
+	}
+	reg:=regexp.MustCompile(`"pro_download_ticket":(.*?),"`)
+	res:=reg.FindAllStringSubmatch(string(buf),-1)
+	if len(res)==0{
+		return 0,errors.New("Can Not Get Ticket Information!")
+	}
+	return strconv.Atoi(res[0][1])
+}
+
+func GetInfos(url string)(infos []string,ifprofession bool,ifshare bool,err error){
+	infos=make([]string,3)
+	cli:=&http.Client{}
+	req,err:=http.NewRequest("GET",url,nil)
+	req.Header.Set("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36")
+	cookie:=&http.Cookie{
+		Name: "BDUSS",
+		Value: config.SeverConfig.BDUSS,
+	}
+	req.AddCookie(cookie)
+	resp,err:=cli.Do(req)
+	if err!=nil{
+		return
+	}
+	defer resp.Body.Close()
+	buf,_:=ioutil.ReadAll(resp.Body)
+	doc:=string(buf)
+	res,err:=QuickRegexp(url,`view/(.*?).html`)
+	infos[0]=res[0][1]  //文档id
+	if err!=nil{
+		return
+	}
+	res,err=QuickRegexp(doc,`'docType': '(.*?)',`)
+	if err!=nil{
+		return
+	}
+	filetype:=res[0][1] //文档类型
+	res,err=QuickRegexp(doc,` 'title': '(.*?)',`)
+	if err!=nil{
+		return
+	}
+	title:=Gbk2utf8(res[0][1])
+	infos[1]=title+"."+filetype//文档名称
+	res,err=QuickRegexp(doc,`"downloadToken" value="(.*?)"`)
+	if err!=nil{
+		return
+	}
+	infos[2]=res[0][1]  //下载的Token
+	res,err=QuickRegexp(doc,`'professionalDoc': '(.*?)'`)
+	if err!=nil{
+		return
+	}
+	ifprofession=res[0][1]=="1"  //是否是专享文档
+	return
+}

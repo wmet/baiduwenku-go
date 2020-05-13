@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign up</title>
+    <link rel="stylesheet" href="/static/css/one-two.css" />
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".logbtn").click(function () {
+                const emailadd = $("#emailadd").val();
+                const code = $("#code").val();
+                const repeatpsd = $("#repeatpsd").val();
+                const checkpsd = $("#checkpsd").val();
+                if (emailadd == "" || code == "" || checkpsd == "" || $("#error2").text() !== "" || $("#error3").text() !== "" || $(
+                        "#error4").text() !== "") {
+                    alert("错误表单！");
+                } else {
+                    var param = {
+                        emailadd: emailadd,
+                        password: checkpsd,
+                        code: code
+                    };
+                    $.post("/hustregister", param, function (data) {
+                        if (data["status"] == 1) {
+                            alert("注册成功！");
+                            window.close();
+                        } else {
+                            alert(data["err"]);
+                        }
+                    })
+                }
+            });
+
+            $("#emailadd").on("keypress change blur", (function () {
+                const checkemail = $(this).val();
+                const reg = /^([a-zA-Z]|[0-9])(\w|-)+@hust.edu.cn/;
+                if (!reg.test(checkemail)) {
+                    $("#error4").text("邮箱格式不对");
+                } else {
+                    $("#error4").text("");
+                }
+            }));
+            $("#checkpsd").on("change blur", (function () {
+                const checkpsd = $(this).val();
+                if (checkpsd.length < 8) {
+                    $("#error2").text("密码长度不能小于八位");
+                } else {
+                    $("#error2").text("");
+                }
+            }));
+            $("#repeatpsd").on("change blur", (function () {
+                const repeatpsd = $("#repeatpsd").val();
+                const checkpsd = $("#checkpsd").val();
+                if (repeatpsd !== checkpsd) {
+                    $("#error3").text("两次密码输入不一致");
+                } else {
+                    $("#error3").text("");
+                }
+            }));
+            $("#checkword").click(function () {
+                const emailadd = document.getElementById("emailadd").value;
+                if ($("#error4").text() != "" || emailadd == "") {
+                    alert("邮箱格式有误！")
+                } else {
+                    const param = {
+                        emailadd: emailadd
+                    };
+                    $.post("/hustregister/code", param,function (data) {
+                        if (data["status"]==1){
+                            alert("发送成功!\n" + "请在" + $("#emailadd").val() + "查收！")
+                        }else{
+                            alert(data["err"]);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <form id="register-form" class="register-form" method="POST">
+        <h1>sign up</h1>
+
+        <div class="txtb">
+            <input type="text" id="emailadd" />
+            <span data-placeholder="智慧华中大邮箱"></span>
+            <input type="button" id="checkword" value="获取验证码" style="font-size: 10px;">
+            <p id="error4" style="font-size: 12px;color: red;position: absolute;left: 5px"></p>
+        </div>
+
+        <div class="txtb">
+            <input type="password" id="checkpsd" />
+            <span data-placeholder="请输入密码"></span>
+            <p id="error2" style="font-size: 12px;color: red;position: absolute;left: 5px"></p>
+        </div>
+
+        <div class="txtb">
+            <input type="password" id="repeatpsd" />
+            <span data-placeholder="请重新输入密码"></span>
+            <p id="error3" style="font-size: 12px;color: red;position: absolute;left: 5px"></p>
+        </div>
+
+        <div class="txtb">
+            <input type="text" id="code"/>
+            <span data-placeholder="验证码"></span>
+        </div>
+        <div class="error">
+            <p></p>
+        </div>
+        <input type="button" class="logbtn" value="sign up" style="font-size: 20px;">
+
+    </form>
+
+    <script type="text/javascript">
+        $(".txtb input").on("focus", function () {
+            $(this).addClass("focus");
+        });
+
+        $(".txtb input").on("blur", function () {
+            if ($(this).val() === "") {
+                $(this).removeClass("focus");
+            }
+        });
+    </script>
+</body>
+
+</html>

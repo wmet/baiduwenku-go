@@ -72,7 +72,7 @@ txtb span:after {
     width:100%;
 }
 
-.submit{
+.logbtn{
     display:block;
     width:100%;
     height:50px;
@@ -85,17 +85,17 @@ txtb span:after {
     transition:.5s;
 }
 
-.submit:hover{
+.logbtn:hover{
     background-position:right;
 }
 
 #checkword{
-    width:20%;
-    float:right;
-    height:25px;
-    border:2px solid #f1f1ff1;
-    border-radius:20px;
-    box-shadow: 2px 4px 6px #000;
+  width:20%;
+  float:right;
+  height:25px;
+  border:2px solid #f1f1ff1;
+  border-radius:20px;
+  box-shadow: 2px 4px 6px #000;
 }
 
 .bottom-text{
@@ -105,8 +105,6 @@ txtb span:after {
 }
 
 .error p{
-    color:red;
-    font-size:20px;
+  color:red;
+  font-size:20px;
 }
-
-
