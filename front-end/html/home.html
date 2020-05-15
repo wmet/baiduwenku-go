@@ -24,7 +24,7 @@
                             $("#error1").text(data["err"]);
                             $("#error1").css("color","red");
                         }else{
-                            window.location.href="/download/?file="+data["path"];
+                            window.location.href=data["path"];
                             $("#url").val("");
                             $("#error1").text("");
                             $(".txtb input").removeClass("focus");
@@ -109,7 +109,7 @@
     .dropdown:hover .dropdown-content {
         display: block;
     }
-    .poptip{background:#FFFCEF;color: #DB7C22;float:left;position: relative;top:8px;left:50px;height: 125px;padding: 6px 10px 5px;font-size: 12px;border: solid 1px #FFBB76;border-radius: 2px;box-shadow: 0 0 3px #ddd;}
+    .poptip{background:#FFFCEF;color: #DB7C22;float:left;position: relative;top:8px;left:50px;height: 140px;padding: 6px 10px 5px;font-size: 12px;border: solid 1px #FFBB76;border-radius: 2px;box-shadow: 0 0 3px #ddd;}
     .poptip-arrow{position: absolute;overflow: hidden;font-style: normal;font-family: simsun;font-size: 12px;text-shadow:0 0 2px #ccc;}
     .poptip-arrow em,.poptip-arrow i{position: absolute;left:0;top:0;font-style: normal;}
     .poptip-arrow em{color:#FFBB76;}

@@ -25,7 +25,7 @@ func main(){
 	go Timer()
 	router := gin.Default()
 	router.Static("/static", "front-end")
-	router.LoadHTMLGlob("front-end/html/*")
+	router.LoadHTMLGlob("front-end/html/*.html")
 	//主页面
 	router.GET("/baiduspider", func(c *gin.Context) {
 		cookie, _ := c.Request.Cookie("sessionid")
@@ -58,6 +58,7 @@ func main(){
 		//根据不同登录状态启用不同的函数
 		if !model.CheckSession(c){
 			filepath,err=spider(url)
+			filepath="/download/?file="+filepath
 		}else{
 			filepath,err=advancedDownload(url)
 		}
@@ -172,7 +173,7 @@ func main(){
 			return
 		}
 		sessionid:=model.NewSessionID(user.EmailAdd)
-		c.SetCookie("sessionid", sessionid, 0, "/", config.SeverConfig.DOMAIN, false,true)
+		c.SetCookie("sessionid", sessionid, 2592000, "/", config.SeverConfig.DOMAIN, false,true)
 		c.JSON(200, gin.H{
 			"status": "1",
 		})
@@ -221,7 +222,11 @@ func advancedDownload(urls string)(filepath string,err error){
 			return "",errors.New("无剩余专享文档下载券！")
 		}
 	}
-	client:=&http.Client{}
+	client:=&http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse //停止重定向，直接把下载连接发送给用户，节省服务器带宽
+		},
+	}
 	val:=url.Values{
 		//"ct": {"20008"},
 		"doc_id": {infos[0]},
@@ -252,14 +257,7 @@ func advancedDownload(urls string)(filepath string,err error){
 		return
 	}
 	defer resp.Body.Close()
-	buf,err:=ioutil.ReadAll(resp.Body)
-	if err!=nil{
-		return
-	}
-	f,_:=os.Create(infos[1])
-	f.Write(buf)
-	f.Close()
-	return infos[1],nil
+	return resp.Header.Get("Location"),nil
 }
 
 //Timer 定时器，爬虫下载的文件十分钟后删除
