@@ -58,6 +58,7 @@ func main(){
 		//根据不同登录状态启用不同的函数
 		if !model.CheckSession(c){
 			filepath,err=spider(url)
+			a[filepath]=time.Now()
 			filepath="/download/?file="+filepath
 		}else{
 			filepath,err=advancedDownload(url)
@@ -69,7 +70,6 @@ func main(){
 			})
 			return
 		}
-		a[filepath]=time.Now()
 		c.JSON(http.StatusOK,gin.H{
 			"status":"1",
 			"path":filepath,
@@ -272,4 +272,5 @@ func Timer(){
 		}
 	}
 }
+
 

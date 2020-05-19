@@ -17,14 +17,12 @@ func StartDocSpider(rawurl string)(string,error){
 		if err!=nil{
 			return "",err
 		}
-		res,err:=utils.QuickRegexp(doc,`{"c":"(.*?)".*?,"y":(.*?),`)
+		res,err:=utils.QuickRegexp(doc,`{"c":"(.*?)".*?,"y":(.*?),.*?"ps":(.*?),`)
 		if err!=nil{
 			return "",err
 		}
-		pre:=""
 		for _,val:=range res{
-			if val[2]!=pre{
-				pre=val[2]
+			if val[3]!="null"{
 				str+="\n"+utils.UnicodeToUTF(val[1])
 			}else{
 				str+=utils.UnicodeToUTF(val[1])
