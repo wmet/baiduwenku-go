@@ -22,6 +22,7 @@ import (
 var a map[string]time.Time = make(map[string]time.Time)
 
 func main(){
+	//启用定时器，每个下载的文件服务器暂存2小时
 	go Timer()
 	router := gin.Default()
 	router.Static("/static", "front-end")
@@ -82,17 +83,27 @@ func main(){
 			c.String(http.StatusBadRequest,"illegal!")
 			return
 		}
-		f,err:=os.Open(name)
+		//判断文件是否存在
+		fileinfo,err:=os.Stat(name)
 		if err!=nil{
 			c.String(http.StatusBadRequest,"No Such File!")
 			return
 		}
-		defer f.Close()
-		buf,_:=ioutil.ReadAll(f)
+		filesize:=strconv.FormatInt(fileinfo.Size(),10)
+		//限制文件大小在50M内
+		if fileinfo.Size()>52428800{
+			c.String(http.StatusForbidden,"Too large file!")
+			return
+		}
+		//防止下载服务器配置文件
+		if strings.Contains(name,"config.json"){
+			return
+		}
 		c.Writer.WriteHeader(http.StatusOK)
 		c.Header("Content-Disposition", "attachment; filename="+name)
 		c.Header("Content-Type", "application/octet-stream")
-		c.Writer.Write(buf)
+		c.Header("Content-Length",filesize)
+		c.File(name)
 	})
 	//用户注册页面
 	router.GET("/hustregister",func(c *gin.Context){
@@ -133,6 +144,7 @@ func main(){
 			})
 			return
 		}
+		//如果用户还未注册
 		if !user.HaveRegistered() {
 			if code == config.VerificationCode[user.EmailAdd].Code {
 				if err:=user.AddUser();err!=nil{
@@ -188,6 +200,7 @@ func main(){
 
 //未登录用户调用的爬虫函数
 func spider(url string)(filepath string,err error) {
+	//获取文档格式
 	docType,err:=utils.GetDocType(url)
 	if err!=nil{
 		return "",errors.New("老夫暂时拿此链接无能为力~（´Д`）")
@@ -224,22 +237,22 @@ func advancedDownload(urls string)(filepath string,err error){
 	}
 	client:=&http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse //停止重定向，直接把下载连接发送给用户，节省服务器带宽
+			return http.ErrUseLastResponse  //停止重定向，直接把下载连接发送给用户，节省服务器带宽
 		},
 	}
 	val:=url.Values{
 		//"ct": {"20008"},
 		"doc_id": {infos[0]},
-		//"retType": {"newResponse"}, //用券文档暂时不需要
+		//"retType": {"newResponse"},
 		//"sns_type": {""},
 		"storage": {"1"},
-		//"useTicket": {"0"}, //用券文档测试不需要
-		//"target_uticket_num": {"0"}, //用券文档暂时不需要
+		//"useTicket": {"0"},
+		//"target_uticket_num": {"0"},
 		"downloadToken": {infos[2]},
 		//"sz": {"37097"},
 		//"v_code": {"0"},
 		//"v_input": {"0"},
-		"req_vip_free_doc": {"1"}, //用券文档暂时不需要
+		"req_vip_free_doc": {"1"}, //共享文档应设为0
 	}
 	req,err:=http.NewRequest("POST","https://wenku.baidu.com/user/submit/download",strings.NewReader(val.Encode()))
 	if err!=nil{
@@ -256,17 +269,33 @@ func advancedDownload(urls string)(filepath string,err error){
 	if err!=nil{
 		return
 	}
-	defer resp.Body.Close()
-	return resp.Header.Get("Location"),nil
+	resp.Body.Close()
+	location:=resp.Header.Get("Location")
+	//如果获取重定向地址失败，尝试将"req_vip_free_doc"参数改为1重新请求
+	if location==""{
+		val.Set("req_vip_free_doc","0")
+		//更改请求体
+		req.Body=ioutil.NopCloser(strings.NewReader(val.Encode()))
+		resp,err=client.Do(req)
+		if err!=nil{
+			return
+		}
+		resp.Body.Close()
+		location=resp.Header.Get("Location")
+		if location==""{
+			return "",errors.New("无法下载该文件！")
+		}
+	}
+	return location,nil
 }
 
-//Timer 定时器，爬虫下载的文件十分钟后删除
+//Timer 定时器，爬虫下载的文件120分钟后删除后删除，精度不高，最大有60分钟偏差
 func Timer(){
 	for{
-		time.Sleep(10*time.Minute)
+		time.Sleep(60*time.Minute)
 		for key,val:=range a{
 			sub:=int(time.Since(val).Minutes())
-			if sub>10{
+			if sub>120{
 				os.Remove(key)
 			}
 		}

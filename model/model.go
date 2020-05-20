@@ -17,7 +17,6 @@ type Session struct {
 	Emailadd string
 }
 
-
 //AddUser 添加一个用户
 func (user *User) AddUser() error {
 	query := "insert into hustusers(emailadd,password) values(?,?)"
@@ -59,6 +58,7 @@ func (user *User)CheckLogin() int{
 	return config.PERMISSION_PASSWORD
 }
 
+//新建一个会话id
 func NewSessionID(emailadd string) string {
 	u:= uuid.NewV4()
 	uuid := u.String()

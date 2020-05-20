@@ -25,6 +25,7 @@ func Gbk2utf8(src string)string{
 	return result
 }
 
+//正则的封装
 func QuickRegexp(raw string,patten string) ([][]string,error){
 	reg:=regexp.MustCompile(patten)
 	res:=reg.FindAllStringSubmatch(raw,-1)
@@ -34,6 +35,7 @@ func QuickRegexp(raw string,patten string) ([][]string,error){
 	return res,nil
 }
 
+//爬虫的封装
 func QuickSpider(url string)(string,error){
 	cli:=&http.Client{}
 	req,err:=http.NewRequest("GET",url,nil)
@@ -53,6 +55,7 @@ func QuickSpider(url string)(string,error){
 	return string(buf),nil
 }
 
+//获取文件的类别
 func GetDocType(url string)(string,error){
 	doc,err:=QuickSpider(url)
 	if err!=nil{
@@ -82,11 +85,13 @@ func UnicodeToUTF(s string)string{
 	return str
 }
 
+//获取文档的id
 func GetDocID(rawurl string)string{
 	res,_:=QuickRegexp(rawurl,`view/(.*?).html`)
 	return res[0][1]
 }
 
+//下载图片
 func GetJPG(url string) ([]byte,error){
 	cli:=&http.Client{}
 	req,err:=http.NewRequest("GET",url,nil)
@@ -106,6 +111,7 @@ func GetJPG(url string) ([]byte,error){
 	return buf,nil
 }
 
+//打包文件
 func ZipFiles(filename string, files []string) error {
 	newZipFile, err := os.Create(filename)
 	if err != nil {
@@ -196,6 +202,7 @@ func GetDownloadTicket()(num int,err error){
 	return strconv.Atoi(res[0][1])
 }
 
+//获取文档的信息
 func GetInfos(url string)(infos []string,ifprofession bool,err error){
 	infos=make([]string,3)
 	cli:=&http.Client{}

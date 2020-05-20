@@ -3,6 +3,7 @@ package filetype
 import (
 	"errors"
 	"github.com/gufeijun/baiduwenku/utils"
+	"io/ioutil"
 	"os"
 	"regexp"
 	"strings"
@@ -13,18 +14,22 @@ func StartTxtSpider(rawurl string)(string,error){
 	if err!=nil{
 		return "",err
 	}
+	//如果已经存在该文件，直接返回
+	if _,err:=os.Stat(title+".txt");err==nil{
+		return title+".txt",nil
+	}
 	data,err:=utils.QuickSpider(url)
 	if err!=nil{
 		return "",err
 	}
-	f,_:=os.Create(title+".txt")
-	defer f.Close()
 	str:=utils.UnicodeToUTF(data)
 	str,err=extract(str)
 	if err!=nil{
 		return "",err
 	}
-	f.WriteString(str)
+	if err:=ioutil.WriteFile(title+".txt",[]byte(str),0666);err!=nil{
+		return "",err
+	}
 	return title+".txt",nil
 }
 
@@ -47,6 +52,7 @@ func extract(str string)(e string,err error){
 	return
 }
 
+//获取目标数据的最终url以及文件的名字
 func parseTxtRawURL(rawurl string)(string,string,error){
 	//dom为静态网页的源代码
 	dom,err:=utils.QuickSpider(rawurl)

@@ -12,13 +12,12 @@ import (
 	"time"
 )
 
-//Db 定义全局db
 var (
 	Db    *sql.DB
 	err   error
 	Mutex sync.Mutex
 	SeverConfig Config
-	VerificationCode map[string]M = make(map[string]M)
+	VerificationCode map[string]M = make(map[string]M)  //key为邮箱,value为M存储着对应验证码和上一次发送验证码时间
 )
 
 const(

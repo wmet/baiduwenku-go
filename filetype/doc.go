@@ -2,6 +2,7 @@ package filetype
 
 import (
 	"github.com/gufeijun/baiduwenku/utils"
+	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -11,33 +12,36 @@ func StartDocSpider(rawurl string)(string,error){
 	if err!=nil{
 		return "",err
 	}
+	//如果已经存在该文件，直接返回
+	if _,err:=os.Stat(title+".doc");err==nil{
+		return title+".doc",nil
+	}
 	var str string
 	for _,val:=range sli{
 		doc,err:=utils.QuickSpider(val)
 		if err!=nil{
 			return "",err
 		}
-		res,err:=utils.QuickRegexp(doc,`{"c":"(.*?)".*?,"y":(.*?),.*?"ps":(.*?),`)
+		res,err:=utils.QuickRegexp(doc,`{"c":"(.*?)".*?"ps":(.*?),`)
 		if err!=nil{
 			return "",err
 		}
 		for _,val:=range res{
-			if val[3]!="null"{
+			//如果ps值不为null则代表文本需要换行
+			if val[2]!="null"{
 				str+="\n"+utils.UnicodeToUTF(val[1])
 			}else{
 				str+=utils.UnicodeToUTF(val[1])
 			}
 		}
 	}
-	f,err:=os.Create(title+".doc")
-	if err!=nil{
+	if err:=ioutil.WriteFile(title+".doc",[]byte(str),0666);err!=nil{
 		return "",err
 	}
-	f.WriteString(str)
-	f.Close()
 	return title+".doc",nil
 }
 
+//获取文档名称，以及文档数据url地址(有多个)，切片形式保存
 func parseDocRawURL(rawurl string)([]string,string,error){
 	doc,err:=utils.QuickSpider(rawurl)
 	if err!=nil{
