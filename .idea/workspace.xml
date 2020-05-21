@@ -4,12 +4,9 @@
     <list default="true" id="40a2b313-e8c8-4706-8eef-5a71da012d58" name="默认的" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/filetype/doc.go" beforeDir="false" afterPath="$PROJECT_DIR$/filetype/doc.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/filetype/ppt.go" beforeDir="false" afterPath="$PROJECT_DIR$/filetype/ppt.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/filetype/txt.go" beforeDir="false" afterPath="$PROJECT_DIR$/filetype/txt.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/model.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/utils.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -84,6 +81,10 @@
       <screen x="0" y="0" width="1280" height="760" />
     </state>
     <state x="96" y="35" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.760@0.0.1280.760" timestamp="1589202869192" />
+    <state x="321" y="117" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1590018334331">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="321" y="117" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1280.760@0.0.1280.760" timestamp="1590018334331" />
     <state x="207" y="0" key="CommitChangelistDialog2" timestamp="1589298909026">
       <screen x="0" y="0" width="1280" height="760" />
     </state>
@@ -108,9 +109,9 @@
       <screen x="0" y="0" width="1280" height="760" />
     </state>
     <state x="172" y="25" key="SettingsEditor/0.0.1280.760@0.0.1280.760" timestamp="1589203018213" />
-    <state x="306" y="85" width="672" height="678" key="search.everywhere.popup" timestamp="1589358297657">
+    <state x="307" y="86" width="672" height="678" key="search.everywhere.popup" timestamp="1590030651411">
       <screen x="0" y="0" width="1280" height="760" />
     </state>
-    <state x="306" y="85" width="672" height="678" key="search.everywhere.popup/0.0.1280.760@0.0.1280.760" timestamp="1589358297657" />
+    <state x="307" y="86" width="672" height="678" key="search.everywhere.popup/0.0.1280.760@0.0.1280.760" timestamp="1590030651411" />
   </component>
 </project>

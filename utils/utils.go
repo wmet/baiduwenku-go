@@ -121,14 +121,14 @@ func ZipFiles(filename string, files []string) error {
 	zipWriter := zip.NewWriter(newZipFile)
 	defer zipWriter.Close()
 	for _, file := range files {
-		if err = AddFileToZip(zipWriter, file); err != nil {
+		if err = addFileToZip(zipWriter, file); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func AddFileToZip(zipWriter *zip.Writer, filename string) error {
+func addFileToZip(zipWriter *zip.Writer, filename string) error {
 	fileToZip, err := os.Open(filename)
 	if err != nil {
 		return err

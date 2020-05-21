@@ -1,62 +1,101 @@
 package filetype
 
 import (
+	"fmt"
 	"github.com/gufeijun/baiduwenku/utils"
 	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
+	"sync"
+	"time"
 )
 
 func StartPPTSpider(rawurl string)(string,error){
-	sl,title,err:=parsePPTRawURL(rawurl)
+	t:=time.Now()
+	//ch用于存放图片url
+	ch:=make(chan string,10)
+
+	//limit限制开启go程的数目为10
+	limit:=make(chan interface{},10)
+
+	title,err:=parsePPTRawURL(rawurl,ch)
 	if err!=nil{
 		return "",err
 	}
+
 	//如果已经存在该文件，直接返回
 	if _,err:=os.Stat(title+".zip");err==nil{
 		return title+".zip",nil
 	}
-	filenames:=make([]string,len(sl))
-	for i:=0;i<len(sl);i++{
-		buf,err:=utils.GetJPG(sl[i])
-		if err!=nil{
-			continue
-		}
-		ioutil.WriteFile(filenames[i],buf,0666)
-		filenames[i]=title+strconv.Itoa(i)+".jpg"
+
+	//i用于记录有多少张图片
+	i:=0
+
+	var wg sync.WaitGroup
+	for url:=range ch{
+		wg.Add(1)
+		//limit满时阻塞
+		limit<-struct{}{}
+
+		go func(wg *sync.WaitGroup,i int,url string) {
+			defer wg.Done()
+			buf,_:=utils.GetJPG(url)
+			ioutil.WriteFile(title+strconv.Itoa(i)+".jpg",buf,0666)
+			//go程完成任务，则释放一个空位
+			<-limit
+		}(&wg,i,url)
+		i++
 	}
-	//文件打包好后删除
-	defer func() {
+	//将图片的文件名存入切片
+	filenames:=make([]string,i)
+	for j:=0;j<i;j++{
+		filenames[j]=title+strconv.Itoa(j)+".jpg"
+	}
+	//同步，等待图片处理完
+	wg.Wait()
+
+	//打包图片
+	if err:=utils.ZipFiles(title+".zip",filenames);err!=nil{
+		return "",err
+	}
+
+	//图片打包完成后删除所有图片
+	go func() {
 		for _,val:=range filenames{
 			os.Remove(val)
 		}
 	}()
+	fmt.Println(time.Since(t))
 	//将图片打包为zip文件
-	return title+".zip",utils.ZipFiles(title+".zip",filenames)
+	return title+".zip",nil
 }
 
 //获取所有图片的url以及文件的名称
-func parsePPTRawURL(rawurl string)([]string,string,error){
+func parsePPTRawURL(rawurl string,ch chan<- string)(string,error){
 	doc,err:=utils.QuickSpider(rawurl)
 	if err!=nil{
-		return nil,"",err
+		return "",err
 	}
 	t,err:=utils.QuickRegexp(doc,`'title': '(.*?)',`)
 	if err!=nil{
-		return nil,"",err
+		return "",err
 	}
 	title:=utils.Gbk2utf8(t[0][1])
-	infoURL:="https://wenku.baidu.com/browse/getbcsurl?doc_id="+utils.GetDocID(rawurl)+"&pn=1&rn=99999&type=ppt"
-	doc,err=utils.QuickSpider(infoURL)
-	doc=strings.Replace(doc,`\/`,`/`,-1)
-	res,err:=utils.QuickRegexp(doc,`"zoom":"(.*?)",`)
-	if err!=nil{
-		return nil,"",err
-	}
-	s:=make([]string,len(res))
-	for i:=0;i<len(res);i++{
-		s[i]=res[i][1]
-	}
-	return s,title,nil
+	//利用go程来得到多个图片的url，文章title先返回给父程
+	go func(ch chan<- string,rawurl string) {
+		defer close(ch)
+		infoURL:="https://wenku.baidu.com/browse/getbcsurl?doc_id="+utils.GetDocID(rawurl)+"&pn=1&rn=99999&type=ppt"
+		doc,err:=utils.QuickSpider(infoURL)
+		if err!=nil{
+			return
+		}
+		doc=strings.Replace(doc,`\/`,`/`,-1)
+		res,_:=utils.QuickRegexp(doc,`"zoom":"(.*?)",`)
+		for i:=0;i<len(res);i++{
+			//将图片url存入管道，让父程进行处理
+			ch<-res[i][1]
+		}
+	}(ch,rawurl)
+	return title,nil
 }

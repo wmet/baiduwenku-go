@@ -3,12 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/gufeijun/baiduwenku/config"
-	"github.com/gufeijun/baiduwenku/filetype"
-	"github.com/gufeijun/baiduwenku/mediumware"
-	"github.com/gufeijun/baiduwenku/model"
-	"github.com/gufeijun/baiduwenku/utils"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -17,6 +11,12 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"github.com/gin-gonic/gin"
+	"github.com/gufeijun/baiduwenku/config"
+	"github.com/gufeijun/baiduwenku/filetype"
+	"github.com/gufeijun/baiduwenku/mediumware"
+	"github.com/gufeijun/baiduwenku/model"
+	"github.com/gufeijun/baiduwenku/utils"
 )
 
 var a map[string]time.Time = make(map[string]time.Time)
@@ -91,7 +91,7 @@ func main(){
 		}
 		filesize:=strconv.FormatInt(fileinfo.Size(),10)
 		//限制文件大小在50M内
-		if fileinfo.Size()>52428800{
+		if fileinfo.Size()>50<<20{
 			c.String(http.StatusForbidden,"Too large file!")
 			return
 		}
@@ -301,5 +301,3 @@ func Timer(){
 		}
 	}
 }
-
-

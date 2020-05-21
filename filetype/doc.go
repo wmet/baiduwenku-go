@@ -8,7 +8,10 @@ import (
 )
 
 func StartDocSpider(rawurl string)(string,error){
-	sli,title,err:=parseDocRawURL(rawurl)
+	//ch用于存放文档数据url
+	ch:=make(chan string,10)
+
+	title,err:=parseDocRawURL(rawurl,ch)
 	if err!=nil{
 		return "",err
 	}
@@ -16,9 +19,10 @@ func StartDocSpider(rawurl string)(string,error){
 	if _,err:=os.Stat(title+".doc");err==nil{
 		return title+".doc",nil
 	}
+
 	var str string
-	for _,val:=range sli{
-		doc,err:=utils.QuickSpider(val)
+	for url:=range ch{
+		doc,err:=utils.QuickSpider(url)
 		if err!=nil{
 			return "",err
 		}
@@ -41,24 +45,26 @@ func StartDocSpider(rawurl string)(string,error){
 	return title+".doc",nil
 }
 
-//获取文档名称，以及文档数据url地址(有多个)，切片形式保存
-func parseDocRawURL(rawurl string)([]string,string,error){
+func parseDocRawURL(rawurl string,ch chan<- string)(string,error){
 	doc,err:=utils.QuickSpider(rawurl)
 	if err!=nil{
-		return nil,"",err
+		return "",err
 	}
 	t,err:=utils.QuickRegexp(doc,`docTitle: '(.*?)',`)
 	if err!=nil{
-		return nil,"",err
+		return "",err
 	}
 	title:=utils.Gbk2utf8(t[0][1])
 	res,err:=utils.QuickRegexp(doc,`https:(.*?).json?(.*?)\\x22}`)
 	if err!=nil{
-		return nil,"",err
+		return "",err
 	}
-	sli:=make([]string,len(res)/2)
-	for i:=0;i<len(res)/2;i++{
-		sli[i]=strings.Replace(res[i][0][:len(res[i][0])-5],`\\\`,"",-1)
-	}
-	return sli,title,nil
+
+	go func(){
+		for i:=0;i<len(res)/2;i++{
+			ch<-strings.Replace(res[i][0][:len(res[i][0])-5],`\\\`,"",-1)
+		}
+		close(ch)
+	}()
+	return title,nil
 }
