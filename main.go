@@ -3,7 +3,14 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/gufeijun/baiduwenku/config"
+	"github.com/gufeijun/baiduwenku/filetype"
+	"github.com/gufeijun/baiduwenku/mediumware"
+	"github.com/gufeijun/baiduwenku/model"
+	"github.com/gufeijun/baiduwenku/utils"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -11,22 +18,20 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"github.com/gin-gonic/gin"
-	"github.com/gufeijun/baiduwenku/config"
-	"github.com/gufeijun/baiduwenku/filetype"
-	"github.com/gufeijun/baiduwenku/mediumware"
-	"github.com/gufeijun/baiduwenku/model"
-	"github.com/gufeijun/baiduwenku/utils"
 )
 
 var a map[string]time.Time = make(map[string]time.Time)
 
 func main(){
 	//启用定时器，每个下载的文件服务器暂存2小时
-	go Timer()
+	go Timer1()
+	//定时器，每天定时12点更新用户剩余的下载次数
+	go Timer2()
+
 	router := gin.Default()
 	router.Static("/static", "front-end")
 	router.LoadHTMLGlob("front-end/html/*.html")
+
 	//主页面
 	router.GET("/baiduspider", func(c *gin.Context) {
 		cookie, _ := c.Request.Cookie("sessionid")
@@ -44,38 +49,49 @@ func main(){
 			Remain int
 		}{emailadd,remain})
 	})
+
 	//文件下载api
 	router.POST("/baiduspider",func(c *gin.Context){
 		url,ok:=c.GetPostForm("url")
 		if !ok{
 			c.JSON(http.StatusOK,gin.H{
-				"status":"0",
+				"status":0,
 				"err":"Can Not Parse URL!",
 			})
 			return
 		}
 		var filepath string
 		var err error
+
 		//根据不同登录状态启用不同的函数
-		if !model.CheckSession(c){
+		if !model.CheckSession(c){  //未登录
 			filepath,err=spider(url)
 			a[filepath]=time.Now()
 			filepath="/download/?file="+filepath
 		}else{
-			filepath,err=advancedDownload(url)
+			user,err1:=model.GetUserInfo(c)
+			if err1!=nil{
+				c.JSON(http.StatusOK,gin.H{
+					"status":0,
+					"err":err1.Error(),
+				})
+				return
+			}
+			filepath,err=advancedDownload(url,user)
 		}
 		if err!=nil{
 			c.JSON(http.StatusOK,gin.H{
-				"status":"0",
+				"status":0,
 				"err":err.Error(),
 			})
 			return
 		}
 		c.JSON(http.StatusOK,gin.H{
-			"status":"1",
+			"status":1,
 			"path":filepath,
 		})
 	})
+
 	//文件下载
 	router.GET("/download", func(c *gin.Context) {
 		name,ok:=c.GetQuery("file")
@@ -105,10 +121,12 @@ func main(){
 		c.Header("Content-Length",filesize)
 		c.File(name)
 	})
+
 	//用户注册页面
 	router.GET("/hustregister",func(c *gin.Context){
 		c.HTML(http.StatusOK,"regist.html",nil)
 	})
+
 	//向用户邮箱发送验证码
 	router.POST("/hustregister/code", mediumware.LimitTimeMediumware(),func(c *gin.Context) {
 		c.JSON(http.StatusOK,gin.H{
@@ -126,17 +144,10 @@ func main(){
 		//向用户发送验证码
 		utils.SendCode(user.EmailAdd, code)
 	})
+
 	//注册api
 	router.POST("/hustregister",mediumware.FormatCheck,func(c *gin.Context){
 		var user *model.User
-		code, ok := c.GetPostForm("code")
-		if !ok {
-			c.JSON(200, gin.H{
-				"status": 0,
-				"err":    "验证码不能为空",
-			})
-			return
-		}
 		if err := c.ShouldBind(&user); err != nil {
 			c.JSON(200, gin.H{
 				"status": 0,
@@ -144,24 +155,25 @@ func main(){
 			})
 			return
 		}
-		//如果用户还未注册
-		if !user.HaveRegistered() {
-			if code == config.VerificationCode[user.EmailAdd].Code {
-				if err:=user.AddUser();err!=nil{
-					fmt.Println(err)
-				}
-				c.JSON(200, gin.H{
-					"status": 1,
-				})
-				delete(config.VerificationCode, user.EmailAdd)
-			} else {
-				c.JSON(200, gin.H{
-					"status": 0,
-					"err":    "验证码错误!",
-				})
-			}
+		//查看是否是华科邮箱，进而赋予不同的权限
+		emailTail:=strings.Split(user.EmailAdd,"@")[1]
+		//普通人权限为0，huster为1
+		if emailTail=="hust.edu.cn"{
+			user.PermissionCode=config.HUSTER_CODE
 		}
+		if err:=user.AddUser();err!=nil{
+			c.JSON(http.StatusBadRequest,gin.H{
+				"status":0,
+				"err":err.Error(),
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"status": 1,
+		})
+		delete(config.VerificationCode, user.EmailAdd)
 	})
+
 	//登录api
 	router.POST("/husterlogin", func(c *gin.Context) {
 		var user *model.User
@@ -187,14 +199,16 @@ func main(){
 		sessionid:=model.NewSessionID(user.EmailAdd)
 		c.SetCookie("sessionid", sessionid, 2592000, "/", config.SeverConfig.DOMAIN, false,true)
 		c.JSON(200, gin.H{
-			"status": "1",
+			"status": 1,
 		})
 	})
+
 	//登出
 	router.GET("/logout", func(c *gin.Context) {
 		c.SetCookie("sessionid", "nil", -1, "/", config.SeverConfig.DOMAIN,false, true)
 		c.Redirect(http.StatusFound, "/baiduspider")
 	})
+
 	router.Run(config.SeverConfig.LISTEN_ADDRESS+":"+config.SeverConfig.LISTEN_PORT)
 }
 
@@ -221,15 +235,24 @@ func spider(url string)(filepath string,err error) {
 }
 
 //登陆用户下载调用的函数
-func advancedDownload(urls string)(filepath string,err error){
+func advancedDownload(urls string,user *model.User)(filepath string,err error){
+	//如果普通用户没有剩余下载次数
+	if user.PermissionCode!=config.HUSTER_CODE&&user.Remain==0{
+		return "",errors.New("今日的三次下载次数用完！")
+	}
 	infos,ifprofession,err:=utils.GetInfos(urls)
 	if err!=nil{
 		return
 	}
+	//如果当前下载文档为专享文档
 	if ifprofession{
 		remain,err:=utils.GetDownloadTicket()
 		if err!=nil{
 			return "",err
+		}
+		//权限不足
+		if user.PermissionCode!=config.HUSTER_CODE{
+			return "",errors.New("仅供华中大用户下载专享VIP文档!")
 		}
 		if remain==0{
 			return "",errors.New("无剩余专享文档下载券！")
@@ -286,11 +309,15 @@ func advancedDownload(urls string)(filepath string,err error){
 			return "",errors.New("无法下载该文件！")
 		}
 	}
+	//普通用户下载完成后，今日剩余下载次数减一
+	if user.PermissionCode!=config.HUSTER_CODE{
+		user.UpdateUser()
+	}
 	return location,nil
 }
 
-//Timer 定时器，爬虫下载的文件120分钟后删除后删除，精度不高，最大有60分钟偏差
-func Timer(){
+//Timer1 定时器，爬虫下载的文件120分钟后删除后删除，精度不高，最大有60分钟偏差
+func Timer1(){
 	for{
 		time.Sleep(60*time.Minute)
 		for key,val:=range a{
@@ -298,6 +325,20 @@ func Timer(){
 			if sub>120{
 				os.Remove(key)
 			}
+		}
+	}
+}
+
+//Timer2 定时器，每天凌晨12点重置用户的剩余下载次数
+func Timer2(){
+	for {
+		now := time.Now()
+		next := now.Add(time.Hour * 24)
+		next = time.Date(next.Year(), next.Month(), next.Day(), 0,0,0,0,next.Location())
+		t := time.NewTimer(next.Sub(now))
+		<-t.C
+		if err:=model.UpdateAll();err!=nil{
+			log.Println(err)
 		}
 	}
 }

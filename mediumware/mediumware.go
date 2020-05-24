@@ -13,6 +13,15 @@ import (
 //FormatCheck 传输User数据的格式检验中间件
 func FormatCheck(c *gin.Context) {
 	var user *model.User
+	code, ok := c.GetPostForm("code")
+	if !ok {
+		c.JSON(200, gin.H{
+			"status": 0,
+			"err":    "验证码不能为空",
+		})
+		c.Abort()
+		return
+	}
 	if err := c.ShouldBind(&user); err != nil {
 		c.JSON(200, gin.H{
 			"status": 0,
@@ -29,7 +38,7 @@ func FormatCheck(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	if ok, _ := regexp.MatchString("^([a-z0-9_\\.-]+)@hust.edu.cn", user.EmailAdd); !ok {
+	if ok, _ := regexp.MatchString("^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$", user.EmailAdd); !ok {
 		c.JSON(200, gin.H{
 			"status": 0,
 			"err":    "邮箱格式有误!",
@@ -53,17 +62,13 @@ func FormatCheck(c *gin.Context) {
 		c.Abort()
 		return
 	}
-}
-
-//VeryfyMediumware 验证用户是否登录的中间件
-func VeryfyMediumware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		//解析cookie
-		if !model.CheckSession(c) {
-			c.String(http.StatusForbidden, "请先登录！")
-			c.Abort()
-			return
-		}
+	if code != config.VerificationCode[user.EmailAdd].Code{
+		c.JSON(http.StatusForbidden,gin.H{
+			"status":0,
+			"err":"验证码不正确",
+		})
+		c.Abort()
+		return
 	}
 }
 
@@ -79,10 +84,10 @@ func LimitTimeMediumware() gin.HandlerFunc{
 			c.Abort()
 			return
 		}
-		if ok, _ := regexp.MatchString("^([a-z0-9_\\.-]+)@hust.edu.cn", user.EmailAdd); !ok {
+		if ok, _ := regexp.MatchString("^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$", user.EmailAdd); !ok {
 			c.JSON(200, gin.H{
 				"status": 0,
-				"err":    "仅限智慧华中大邮箱注册！",
+				"err":   "请输入正确邮箱格式！",
 			})
 			c.Abort()
 			return

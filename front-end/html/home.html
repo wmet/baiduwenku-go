@@ -121,10 +121,14 @@
 <img src="https://i.loli.net/2020/05/13/9mMW4hcAoLyq2Xb.png" style="position: absolute;left: 5px;top:10px;" height="40" width="40">
 <div class="poptip">
     <span class="poptip-arrow poptip-arrow-left"><em>◆</em><i>◆</i></span>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;非登录用户解析速度较慢,且不支持excel文件的下载,下载</br>文件非原格式，ppt文件会转为多张图片压缩打包的zip格式。<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;登录用户能以源文件形式不限次数下载所有需要下载券的vip</br>文档，对于vip专享文档(专享文档区别于普通的vip文档)由于<br>
-    百度限制，每月所有人加起来只有9次下载机会，次月次数刷<br>新。目前注册只对华科学生开放，统一使用智慧华中大邮箱
-    <br>注册本站。<a href="http://ncs.hust.edu.cn/info/1082/1796.htm" style="text-decoration: underline">没有华科邮箱？</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;项目永久免费且已经开源，详见：<a href="https://github.com/gufeijun/baiduwenku-go" style="text-decoration: underline">baiduwenku-go</a> 。
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: red">非登录用户</span>解析速度较慢,且不支持excel文件的下载,下载
+    </br>文件非原格式，ppt文件会转为多张图片压缩打包的zip格式。
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: red">登录用户</span>能以源文件形式下载所有需要下载券的vip文档，
+    </br>对于vip专享文档(专享文档区别于普通的vip文档)由于百度限
+    <br>制，每月所有人加起来只有9次下载机会，次月次数刷新。
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;目前开放注册，但仅用智慧华中大邮箱注册的用户享有不
+    <br>限次数下载特权，其他邮箱注册用户每天仅有3次机会！
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;项目永久免费且已经开源，详见：<a href="https://github.com/gufeijun/baiduwenku-go" style="text-decoration: underline">baiduwenku-go</a> 。
 </div>
 <img src="https://i.loli.net/2020/05/13/k4Yljgwe2FWBiAH.jpg" style="position: absolute;left: 45px;top:200px;" width="360">
 <div style="position: absolute;left: 120px;top:250px;" height="200">本月剩余专享vip文档下载次数</div>
@@ -150,7 +154,7 @@
     </div>
     {{if .Emailadd}}
         <input type="button" class="submit" id="sub1" value="开始解析" style="font-size: 20px;">
-        <p style="text-align: center;margin-top: 10px">对你有帮助就给<a style="text-decoration: underline" href="https://github.com/gufeijun/baiduwenku-go" target="_blank">项目</a>点一个star吧,（●＞ω＜●）！</p>
+        <p style="text-align: center;margin-top: 10px">对您有帮助就给<a style="text-decoration: underline" href="https://github.com/gufeijun/baiduwenku-go" target="_blank">项目</a>点一个star吧,（●＞ω＜●）！</p>
     {{else}}
     <input type="button" class="submit" id="sub1" value="开始解析(非源文件)" style="font-size: 20px;">
     <p style="text-align: center;margin-top: 10px;">想下载源文件？免费注册和登录吧！</p>
@@ -162,10 +166,10 @@
 <div class="popOut">
     <span title="关闭"> x </span>
     <table style="position: relative">
-        <caption>智慧华中大邮箱登录</caption>
+        <caption>邮箱登录</caption>
         <tr>
             <td width="120">邮箱：</td>
-            <td><input type="text" class="inp" id="email" placeholder="请输入智慧华中大邮箱" required/></td>
+            <td><input type="text" class="inp" id="email" placeholder="请输入邮箱" required/></td>
         </tr>
         <tr>
             <td>密码：</td>

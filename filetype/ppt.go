@@ -1,18 +1,15 @@
 package filetype
 
 import (
-	"fmt"
 	"github.com/gufeijun/baiduwenku/utils"
 	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 )
 
 func StartPPTSpider(rawurl string)(string,error){
-	t:=time.Now()
 	//ch用于存放图片url
 	ch:=make(chan string,10)
 
@@ -66,7 +63,7 @@ func StartPPTSpider(rawurl string)(string,error){
 			os.Remove(val)
 		}
 	}()
-	fmt.Println(time.Since(t))
+
 	//将图片打包为zip文件
 	return title+".zip",nil
 }

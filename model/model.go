@@ -10,6 +10,8 @@ type User struct{
 	ID             int    `json:"id" form:"id"`
 	EmailAdd       string `json:"emailadd" form:"emailadd"`
 	Password       string `json:"password" form:"password"`
+	PermissionCode int
+	Remain int
 }
 
 type Session struct {
@@ -19,20 +21,22 @@ type Session struct {
 
 //AddUser 添加一个用户
 func (user *User) AddUser() error {
-	query := "insert into hustusers(emailadd,password) values(?,?)"
-	_, err := config.Db.Exec(query, user.EmailAdd, user.Password)
+	query := "insert into hustusers(emailadd,password,permissioncode) values(?,?,?)"
+	_, err := config.Db.Exec(query, user.EmailAdd, user.Password,user.PermissionCode)
 	return err
 }
 
-//UpdateUser 修改一个用户的密码
-func (user *User) UpdateUser(newpsd string) (err error) {
-	query := "update hustusers set password=? where id=? "
-	if _, err = config.Db.Exec(query, newpsd, user.ID); err != nil {
-		return
-	}
-	//更改密码并清除保存的session信息
-	query = "delete from hustsessions where userid=?"
-	_, err = config.Db.Exec(query, user.ID)
+//UpdateUser 修改用户的剩余下载次数
+func (user *User) UpdateUser()error {
+	query := "update hustusers set remain=? where id=? "
+	_, err := config.Db.Exec(query, user.Remain-1, user.ID)
+	return err
+}
+
+//UpdateAll 更新所有用户的剩余下载次数
+func UpdateAll()error{
+	query:="update hustusers set remain=3"
+	_,err:=config.Db.Exec(query)
 	return err
 }
 
@@ -93,4 +97,17 @@ func CheckSession(c *gin.Context)bool{
 	return row.Scan(&userid)!=nil
 }
 
-
+//GetUserInfo  获取权限码
+func GetUserInfo(c *gin.Context)(user *User,err error){
+	var u User
+	cookie, err := c.Request.Cookie("sessionid")
+	if err != nil {
+		return
+	}
+	sessionid:=cookie.Value
+	query:="select hustusers.permissioncode,hustusers.remain,hustusers.id from hustusers inner join hustsessions on hustusers.emailadd=hustsessions.emailadd where hustsessions.sessionid=?"
+	row:=config.Db.QueryRow(query,sessionid)
+	err=row.Scan(&u.PermissionCode,&u.Remain,&u.ID)
+	user=&u
+	return
+}
