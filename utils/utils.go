@@ -248,3 +248,13 @@ func GetInfos(url string)(infos []string,ifprofession bool,err error){
 	ifprofession=res[0][1]=="1"  //是否是专享文档
 	return
 }
+
+//IsAllSpace 判断一个字符串是否全由空格组成
+func IsAllSpace(s string)(ok bool){
+	for i:=0;i<len(s);i++{
+		if s[i:i+1]!=" "{
+			return false
+		}
+	}
+	return true
+}

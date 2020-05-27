@@ -97,7 +97,7 @@ func CheckSession(c *gin.Context)bool{
 	return row.Scan(&userid)!=nil
 }
 
-//GetUserInfo  获取权限码
+//GetUserInfo  获取用户信息
 func GetUserInfo(c *gin.Context)(user *User,err error){
 	var u User
 	cookie, err := c.Request.Cookie("sessionid")

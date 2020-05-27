@@ -109,7 +109,7 @@
     .dropdown:hover .dropdown-content {
         display: block;
     }
-    .poptip{background:#FFFCEF;color: #DB7C22;float:left;position: relative;top:8px;left:50px;height: 140px;padding: 6px 10px 5px;font-size: 12px;border: solid 1px #FFBB76;border-radius: 2px;box-shadow: 0 0 3px #ddd;}
+    .poptip{background:#FFFCEF;color: #DB7C22;float:left;position: relative;top:8px;left:50px;height: 170px;padding: 6px 10px 5px;font-size: 12px;border: solid 1px #FFBB76;border-radius: 2px;box-shadow: 0 0 3px #ddd;}
     .poptip-arrow{position: absolute;overflow: hidden;font-style: normal;font-family: simsun;font-size: 12px;text-shadow:0 0 2px #ccc;}
     .poptip-arrow em,.poptip-arrow i{position: absolute;left:0;top:0;font-style: normal;}
     .poptip-arrow em{color:#FFBB76;}
@@ -121,17 +121,19 @@
 <img src="https://i.loli.net/2020/05/13/9mMW4hcAoLyq2Xb.png" style="position: absolute;left: 5px;top:10px;" height="40" width="40">
 <div class="poptip">
     <span class="poptip-arrow poptip-arrow-left"><em>◆</em><i>◆</i></span>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: red">非登录用户</span>解析速度较慢,且不支持excel文件的下载,下载
-    </br>文件非原格式，ppt文件会转为多张图片压缩打包的zip格式。
-    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: red">登录用户</span>能以源文件形式下载所有需要下载券的vip文档，
-    </br>对于vip专享文档(专享文档区别于普通的vip文档)由于百度限
-    <br>制，每月所有人加起来只有9次下载机会，次月次数刷新。
-    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;目前开放注册，但仅用智慧华中大邮箱注册的用户享有不
-    <br>限次数下载特权，其他邮箱注册用户每天仅有3次机会！
-    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;项目永久免费且已经开源，详见：<a href="https://github.com/gufeijun/baiduwenku-go" style="text-decoration: underline">baiduwenku-go</a> 。
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: red">非登录用户</span>解析速度较慢,暂不支持excel文件的下载,下载
+    </br>文件并<span style="color: red">非原格式</span>，可能存在排版问题。
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: red">登录用户</span>能以<span style="color: red">原格式</span>下载所有vip文档，对于vip专享文档
+    </br>(专享文档区别于普通的vip文档)由于百度限制，每月所有人
+    <br>加起来只有9次下载机会，次月次数刷新。
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;已经开放注册，但仅用智慧华中大邮箱注册的用户享有不
+    <br>限次数下载特权。其他邮箱注册用户每天仅有3次下载次数，
+    <br>能下载VIP免费文档和VIP共享文档，但不包括VIP专享文档。
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: red">更新通知</span>：优化了引号以及斜杠号的输出问题，优化了
+    <br>word文档排版。详见：<a href="https://github.com/gufeijun/baiduwenku-go" style="text-decoration: underline">baiduwenku-go</a> 。
 </div>
 <img src="https://i.loli.net/2020/05/13/k4Yljgwe2FWBiAH.jpg" style="position: absolute;left: 45px;top:200px;" width="360">
-<div style="position: absolute;left: 120px;top:250px;" height="200">本月剩余专享vip文档下载次数</div>
+<div style="position: absolute;left: 120px;top:250px;" height="200">本月剩余VIP专享文档下载次数</div>
 <div style="position: absolute;left: 210px;top:280px;font-size: 60px" height="200">{{.Remain}}</div>
 <form action="" id="register-form" class="register-form" method="POST">
     {{if .Emailadd}}

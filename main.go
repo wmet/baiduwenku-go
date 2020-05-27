@@ -252,7 +252,7 @@ func advancedDownload(urls string,user *model.User)(filepath string,err error){
 		}
 		//权限不足
 		if user.PermissionCode!=config.HUSTER_CODE{
-			return "",errors.New("仅供华中大用户下载专享VIP文档!")
+			return "",errors.New("您只有用券文档和共享文档的免费下载权限！")
 		}
 		if remain==0{
 			return "",errors.New("无剩余专享文档下载券！")

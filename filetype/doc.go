@@ -26,19 +26,32 @@ func StartDocSpider(rawurl string)(string,error){
 		if err!=nil{
 			return "",err
 		}
-		res,err:=utils.QuickRegexp(doc,`{"c":"(.*?)".*?"ps":(.*?),`)
+		res,err:=utils.QuickRegexp(doc,`{"c":"(.*?)".*?"y":(.*?),.*?"ps":(.*?),`)
 		if err!=nil{
 			return "",err
 		}
+		//pre_y记录上一行的纵坐标
+		pre_y:=res[0][2]
 		for _,val:=range res{
-			//如果ps值不为null则代表文本需要换行
-			if val[2]!="null"{
-				str+="\n"+utils.UnicodeToUTF(val[1])
+			//三种情况要换行，不要问我怎么写出这坨翔一样的东西，想死的心都有了
+			//1、如果ps值为{"_enter":1}则代表文本需要换行
+			if val[3]==`{"_enter":1}`{
+				str+=utils.UnicodeToUTF(val[1])+"\n"
 			}else{
+				//2、str最后一位为" "且该行与上一行的y坐标不同则换行
+				//3、str最后一位为换行符，倒数第3位为" "则换行
+				if len(str)>1&&str[len(str)-1:]==" "&&val[2]!=pre_y{
+					str+="\n"
+				}else if len(str)>2&&str[len(str)-1:]=="\n"&&str[len(str)-3:len(str)-2]==" "{
+					str+="\n"
+				}
 				str+=utils.UnicodeToUTF(val[1])
 			}
+			pre_y=val[2]
 		}
 	}
+	str=strings.Replace(str,`\/`,`/`,-1)
+	str=strings.Replace(str,"\\","\"",-1)
 	if err:=ioutil.WriteFile(title+".doc",[]byte(str),0666);err!=nil{
 		return "",err
 	}
@@ -62,6 +75,7 @@ func parseDocRawURL(rawurl string,ch chan<- string)(string,error){
 
 	go func(){
 		for i:=0;i<len(res)/2;i++{
+			//交给父程处理
 			ch<-strings.Replace(res[i][0][:len(res[i][0])-5],`\\\`,"",-1)
 		}
 		close(ch)
