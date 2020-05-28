@@ -3,26 +3,27 @@ package utils
 import (
 	"archive/zip"
 	"errors"
-	"github.com/go-gomail/gomail"
-	"github.com/gufeijun/baiduwenku/config"
 	"io"
 	"log"
 	"os"
 	"regexp"
+
+	"github.com/go-gomail/gomail"
+	"github.com/gufeijun/baiduwenku/config"
 )
 
 /*
-		公用的工具函数
- */
+	公用的工具函数
+*/
 
 //正则的封装
-func QuickRegexp(raw string,patten string) ([][]string,error){
-	reg:=regexp.MustCompile(patten)
-	res:=reg.FindAllStringSubmatch(raw,-1)
-	if len(res)==0{
-		return nil,errors.New("No Submatch")
+func QuickRegexp(raw string, patten string) ([][]string, error) {
+	reg := regexp.MustCompile(patten)
+	res := reg.FindAllStringSubmatch(raw, -1)
+	if len(res) == 0 {
+		return nil, errors.New("No Submatch")
 	}
-	return res,nil
+	return res, nil
 }
 
 //打包文件
@@ -70,7 +71,7 @@ func addFileToZip(zipWriter *zip.Writer, filename string) error {
 func SendCode(emailadd string, code string) {
 	m := gomail.NewMessage()
 
-	m.SetAddressHeader("From", config.SeverConfig.IMAP_EMAIL/*"发件人地址"*/, "百度文库下载平台") // 发件人
+	m.SetAddressHeader("From", config.SeverConfig.IMAP_EMAIL /*"发件人地址"*/, "百度文库下载平台") // 发件人
 
 	m.SetHeader("To", m.FormatAddress(emailadd, "收件人")) // 收件人
 
@@ -78,23 +79,23 @@ func SendCode(emailadd string, code string) {
 
 	m.SetBody("text/plain", "您的验证码为:"+code) // 正文
 
-	d := gomail.NewPlainDialer(config.SeverConfig.IMAP_SERVER,  config.SeverConfig.IMAP_PORT, config.SeverConfig.IMAP_EMAIL, config.SeverConfig.IMAP_PASSWORD) // 发送邮件服务器、端口、发件人账号、发件人密码
+	d := gomail.NewPlainDialer(config.SeverConfig.IMAP_SERVER, config.SeverConfig.IMAP_PORT, config.SeverConfig.IMAP_EMAIL, config.SeverConfig.IMAP_PASSWORD) // 发送邮件服务器、端口、发件人账号、发件人密码
 	if err := d.DialAndSend(m); err != nil {
 		log.Println("发送失败", err)
 		return
 	}
-	log.Println("Have sent email to "+emailadd)
+	log.Println("Have sent email to " + emailadd)
 }
 
-func PrePrecess(url string)(location string,ok bool){
-	ok,err:=IsVIPfreeDoc(url)
-	if err!=nil||!ok{
+func PrePrecess(url string) (location string, ok bool) {
+	ok, err := IsVIPfreeDoc(url)
+	if err != nil || !ok {
 		return
 	}
-	infos,_,err:=GetInfos(url)
-	if err!=nil{
+	infos, _, err := GetInfos(url)
+	if err != nil {
 		return
 	}
-	location,err=Getlocation(infos)
-	return location,err==nil
+	location, err = Getlocation(infos)
+	return location, err == nil
 }

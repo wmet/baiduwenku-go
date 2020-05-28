@@ -1,5 +1,5 @@
 package crawl
 
-func StartPdfSpider(rawurl string)(string,error){
+func StartPdfSpider(rawurl string) (string, error) {
 	return StartDocSpider(rawurl)
 }
