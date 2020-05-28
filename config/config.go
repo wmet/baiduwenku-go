@@ -5,57 +5,46 @@ import (
 	"encoding/json"
 	_ "github.com/go-sql-driver/mysql"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
-	"sync"
-	"time"
 )
 
 var (
 	Db    *sql.DB
-	err   error
-	Mutex sync.Mutex
 	SeverConfig Config
-	VerificationCode map[string]M = make(map[string]M)  //key为邮箱,value为M存储着对应验证码和上一次发送验证码时间
 )
 
-const(
-	NOT_REGISTERED=1
-	WRONG_PASSWORD=2
-	PERMISSION_PASSWORD=3
-	HUSTER_CODE=1
-)
-
-type M struct{
-	Code string
-	Time time.Time
-}
-
+//配置信息
 type Config struct {
-	DB_NAME string
-	DB_CONN string
-	LISTEN_ADDRESS string
-	LISTEN_PORT string
-	IMAP_PORT int
-	IMAP_SERVER string
-	IMAP_EMAIL string
-	IMAP_PASSWORD string
-	BDUSS string
-	DOMAIN string
+	DB_NAME string				//数据库名称
+	DB_CONN string				//数据库连接
+	LISTEN_ADDRESS string		//监听地址
+	LISTEN_PORT string			//监听端口
+	IMAP_PORT int				//IMAP服务器的端口
+	IMAP_SERVER string			//IMAP服务器
+	IMAP_EMAIL string			//IMAP服务器的邮箱
+	IMAP_PASSWORD string		//IMAP服务的授权码
+	BDUSS string				//百度文库vip账号的cookie
+	DOMAIN string				//自己服务器的域名
 }
 
 func init() {
-	f, _ := os.Open("config.json")
+	f, err := os.Open("config.json")
+	if err!=nil{
+		panic("无法定位配置文件")
+	}
+	defer f.Close()
+
 	buf, _ := ioutil.ReadAll(f)
+	//解码配置文件
 	dec := json.NewDecoder(strings.NewReader(string(buf)))
 	if err := dec.Decode(&SeverConfig); err != nil {
-		log.Fatal("读取配置文件失败")
-		os.Exit(1)
+		panic("读取配置文件失败")
 	}
-	f.Close()
+
+	//连接数据库
 	Db, _ = sql.Open(SeverConfig.DB_NAME, SeverConfig.DB_CONN)
 	if err = Db.Ping(); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 }

@@ -2,13 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="40a2b313-e8c8-4706-8eef-5a71da012d58" name="默认的" comment="">
+      <change afterPath="$PROJECT_DIR$/controller/UserController.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/filetype/doc.go" beforeDir="false" afterPath="$PROJECT_DIR$/filetype/doc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filetype/doc.go" beforeDir="false" afterPath="$PROJECT_DIR$/crawl/doc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filetype/pdf.go" beforeDir="false" afterPath="$PROJECT_DIR$/crawl/pdf.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filetype/ppt.go" beforeDir="false" afterPath="$PROJECT_DIR$/crawl/ppt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filetype/txt.go" beforeDir="false" afterPath="$PROJECT_DIR$/crawl/txt.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/html/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/html/home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mediumware/mediumware.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/model/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/utils.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/common.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,9 +117,9 @@
       <screen x="0" y="0" width="1280" height="760" />
     </state>
     <state x="172" y="25" key="SettingsEditor/0.0.1280.760@0.0.1280.760" timestamp="1589203018213" />
-    <state x="309" y="88" width="672" height="678" key="search.everywhere.popup" timestamp="1590593445478">
+    <state x="311" y="90" width="672" height="678" key="search.everywhere.popup" timestamp="1590661409435">
       <screen x="0" y="0" width="1280" height="760" />
     </state>
-    <state x="309" y="88" width="672" height="678" key="search.everywhere.popup/0.0.1280.760@0.0.1280.760" timestamp="1590593445478" />
+    <state x="311" y="90" width="672" height="678" key="search.everywhere.popup/0.0.1280.760@0.0.1280.760" timestamp="1590661409435" />
   </component>
 </project>

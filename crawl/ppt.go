@@ -1,4 +1,4 @@
-package filetype
+package crawl
 
 import (
 	"github.com/gufeijun/baiduwenku/utils"
@@ -10,6 +10,11 @@ import (
 )
 
 func StartPPTSpider(rawurl string)(string,error){
+	//如果是vip免费文档直接调用第二种下载方式
+	if loction,ok:=utils.PrePrecess(rawurl);ok{
+		return loction,nil
+	}
+
 	//ch用于存放图片url
 	ch:=make(chan string,10)
 
@@ -70,15 +75,19 @@ func StartPPTSpider(rawurl string)(string,error){
 
 //获取所有图片的url以及文件的名称
 func parsePPTRawURL(rawurl string,ch chan<- string)(string,error){
+	//发起http请求
 	doc,err:=utils.QuickSpider(rawurl)
 	if err!=nil{
 		return "",err
 	}
+
+	//获取文档标题
 	t,err:=utils.QuickRegexp(doc,`'title': '(.*?)',`)
 	if err!=nil{
 		return "",err
 	}
 	title:=utils.Gbk2utf8(t[0][1])
+
 	//利用go程来得到多个图片的url，文章title先返回给父程
 	go func(ch chan<- string,rawurl string) {
 		defer close(ch)

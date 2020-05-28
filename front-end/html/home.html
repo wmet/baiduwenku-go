@@ -49,13 +49,7 @@
                     if (data["status"] == 1) {
                         location.reload();
                     } else {
-                        if(data["err"]==2){
-                            $("#password").css("border-color","red");
-                            alert("密码错误！");
-                        }else{
-                            $("#email").css("border-color","red");
-                            alert("邮箱未注册！");
-                        }
+                        alert(data["err"])
                     }
                 });
             });

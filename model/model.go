@@ -49,17 +49,17 @@ func (user *User) HaveRegistered() bool {
 }
 
 //判断一个登录用户是否合法
-func (user *User)CheckLogin() int{
+func (user *User)CheckLogin() string{
 	query := "select password from hustusers where emailadd=?"
 	row:=config.Db.QueryRow(query,user.EmailAdd)
 	var password string
 	if err:=row.Scan(&password);err!=nil{
-		return config.NOT_REGISTERED
+		return "该邮箱未注册!"
 	}
 	if password!=user.Password{
-		return config.WRONG_PASSWORD
+		return "错误密码！"
 	}
-	return config.PERMISSION_PASSWORD
+	return ""
 }
 
 //新建一个会话id
